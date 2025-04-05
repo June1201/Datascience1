@@ -1,0 +1,179 @@
+---
+title: "Analysis of influencing factors of the number of standard drinks"
+author: "DATA1001 Group8"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+    code-fold: true
+---
+
+```{r}
+# Load required libraries
+library(tidyverse)
+library(plotly)
+
+# Load data
+data = read.csv("data1001_survey_data_2025_S1.csv")
+data = na.omit(data)
+
+# Filter data for analysis
+data_filtered = filter(data, 
+                      consent == "I consent to take part in the study", 
+                      standard_drinks <= 20)
+
+# Convert variables to numeric
+data_filtered$standard_drinks = as.numeric(data_filtered$standard_drinks)
+data_filtered$stress = as.numeric(data_filtered$stress)
+```
+
+# Recommendation/Insight
+
+Overall, international students exhibit higher stress levels than domestic students. However, the relationship between alcohol consumption and students' stress levels is inconsistent. Implementing targeted stress reduction programs for both international and domestic students could help manage their stress and potentially reduce alcohol consumption, thereby improving their academic performance.
+
+
+# Evidence
+
+## IDA
+
+**Overview** 
+
+This data comes from a publicly posted survey on Canvas by teachers and was completed by 2,082 students studying DATA1XO1. For our analysis, we focus on three key variables: 
+
+`stress` (0-10 scale) which is Quantitative discrete variable (Numeric) 
+
+`standard_drink` (number of drinks in last 7 days) which is Quantitative continuous variable (Numeric)
+
+`student_type` (Domestic/International) which is Qualitative nominal variable (Categorical)
+
+among 28 variables in the survey.
+
+**Data Cleaning**
+
+Before analysis, we removed missing values and extreme values in standard_drinks (>= 20) as these were likely data entry errors.
+
+```{r, warning = FALSE, message = FALSE}
+ggplot(data_filtered, aes(x=data_filtered$standard_drinks))+
+  geom_boxplot()+
+  labs(x="number of standart_drink last 7 days")
+```
+
+**Limitations** 
+
+The data collection process has several limitations:
+
+1. Survey Limitation: The survey was conducted only among DATA1X01 students, which means our data may not reflect the entire population of USYD students.
+
+2. Response quality: Because this is a non-scored questionnaire, some students may have filled it out casually to complete it quickly, which could introduce inaccuracy into the data
+
+**Assumptions** 
+
+Hence, we made several assumptions about the data:
+
+1. Data honesty: We assume that students answered the survey honestly and reasonably, excluding some extremes
+
+2. Sample representation: We assume that our sample of DATA1X01 students is representative of the USYD student population in terms of stress levels and drinking patterns
+
+## Research Question 1
+
+**Does the stress level vary between domestic and international students?**
+
+```{r}
+a = ggplot(data, aes(x = student_type, y = stress)) + 
+  geom_boxplot(aes(fill = student_type)) +  
+  theme_classic()+  
+  labs(title = "Student Type vs Stress Levels", x = "Student Type", y = "Stress Level", fill="Student Type") #Labels  will be displayed in your html
+library(plotly)  
+
+x = ggplotly(a) 
+x 
+```
+
+The box plot analysis reveals notable differences in stress levels between domestic and international students. International students show higher stress levels with a median of 6.00 and Q1 (first quartile) of 4.00, while domestic students have a lower median of 5.00 and Q1 of 3.00. This indicates that international students consistently experience higher stress levels, with at least half of them reporting stress levels of 6 or higher.
+
+The spread of stress levels also differs between these groups. Domestic students have a wider range of stress levels with an IQR (Interquartile Range) of 4.00, compared to international students' IQR of 3.00. This suggests that while international students tend to experience higher stress, the levels of their stresses are more concentrated within a narrower range.
+
+These differences likely reflect the additional challenges faced by international students, such as acculturation, academic performance, and socialization in an unfamiliar environment.
+
+## Research Question 2 (Linear Model)
+
+**Is there a linear correlation between the number of standard drinks consumed in the last 7 days and stress level among DATA1001 students?**
+
+```{r}
+# Calculating correlation coefficient
+correlation = cor(data_filtered$stress, data_filtered$standard_drinks)
+correlation = -0.01302529
+
+# Draw a scatter plot and fit a regression line 
+ggplot(data_filtered, aes(x = stress, y = standard_drinks)) + 
+  geom_point(color = "blue") +    #scatter          
+  geom_smooth(method = "lm", color = "red", se = FALSE) +    #regression line        
+  labs(title = "Standard drinks vs Stress",  
+       x = "Stress level",  
+       y = "Standard Drinks consumed last 7 days") + 
+  theme_minimal() 
+ 
+# Fit linear model 
+model = lm(standard_drinks ~ stress, data = data_filtered) 
+ 
+# Draw a residual plot 
+ggplot(model, aes(x = .fitted, y = .resid)) + 
+  geom_point() +     # Residual point 
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +  # Horizontal reference line 
+  labs(title = "Residuals vs. Fitted Values for standard drinks based on stress", 
+       x = "Fitted Values",  
+       y = "Residuals") + 
+  theme_minimal() 
+```
+
+Our analysis excluded extreme values, specifically those exceeding 20 standard drinks consumed in the last 7 days, to avoid overcrowding the graph.
+This reveals no significant relationship between stress levels and alcohol consumption among DATA1001 students. The scatter plot shows no clear linear pattern, with a correlation coefficient of -0.013 indicating an extremely weak negative relationship. The residual plot's non-random distribution suggests that the linear model may not be appropriate for this data.
+
+This lack of relationship could be explained by various factors: students might use other stress management methods, or their drinking patterns might be influenced more by social and cultural factors than stress levels. Some students may simply drink for enjoyment rather than stress relief.
+
+**Conclusion**
+
+Our investigation found no clear linear relationship between weekly alcohol consumption and stress level for DATA1X01 students, suggesting that stress management strategies should consider multiple factors beyond just stress levels.
+
+# Articles
+
+1. Kanaparthi, A. (2009). Relations between acculturation and alcohol use among international students (Publication No. 133) [Doctoral dissertation, Florida International University]. FIU Digital Commons. https://digitalcommons.fiu.edu/etd/133
+
+2. Schwandt, M. L. (2024). The role of resilience in the relationship between stress and alcohol. Neurobiology of Stress, (4-1 section). https://www.sciencedirect.com/science/article/pii/S2352289524000407#sec4
+
+These articles had a similar initial approach to ours: alcohol consumption varies with individual levels of stress. 
+However, their findings support our observation that the relationship between alcohol consumption and stress does not always yield consistent results
+
+# Professional Standard of Report
+
+We have implemented rigorous data cleaning procedures, including the removal of extreme outliers and non-consenting participants to avoid any uncertainty of our data. To minimize any potential biases, our research has been reviewed and edited multiple times by each group member. Ethical considerations regarding student data privacy and consent have been strictly followed throughout the research process.
+
+# Acknowledgements
+
+The contribution of each group member: *Task* Name
+
+*IDA* Gavin
+
+*Research question 1* Azel
+
+*Research question 2* Kaixin
+
+*QMD & html compliers (two people)* Fengjun, Dongxu
+
+*Article & professional standard of Report, ppt creator, general reviewer* Junseo
+
+**Group Meetings Timeline**
+
+First discussion via instagram call (29/03/25)
+
+Brainstorming to determine our research questions and detailed tasks were allocated to each member
+
+Physical meeting during workshop (02/04/25) 
+
+Checking the progress of each member, sharing and discussing any coding issues 
+
+Final meeting via instagram call (06/04/25)
+
+Final review of our report (qmd file) & preparation of our presentation
+
+AI usage statement: This report was conducted without the use of AI tools
