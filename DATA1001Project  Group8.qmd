@@ -8,7 +8,7 @@ format:
     code-fold: true
 ---
 
-```{r}
+```{r setup, message=FALSE, warning=FALSE}
 # Load required libraries
 library(tidyverse)
 library(plotly)
@@ -22,14 +22,11 @@ data_filtered = filter(data,
                       consent == "I consent to take part in the study", 
                       standard_drinks <= 20)
 
-# Convert variables to numeric
-data_filtered$standard_drinks = as.numeric(data_filtered$standard_drinks)
-data_filtered$stress = as.numeric(data_filtered$stress)
 ```
 
 # Recommendation/Insight
 
-Overall, international students exhibit higher stress levels than domestic students. However, the relationship between alcohol consumption and students' stress levels is inconsistent. Implementing targeted stress reduction programs for both international and domestic students could help manage their stress and potentially reduce alcohol consumption, thereby improving their academic performance.
+Overall, international students show higher stress levels than domestic students. However, the relationship between alcohol consumption and students' stress levels is inconsistent. Implementing targeted stress reduction programs for both international and domestic students could help manage their stress and potentially reduce alcohol consumption, thereby improving their academic performance.
 
 
 # Evidence
@@ -40,7 +37,7 @@ Overall, international students exhibit higher stress levels than domestic stude
 
 This data comes from a publicly posted survey on Canvas by teachers and was completed by 2,082 students studying DATA1XO1. For our analysis, we focus on three key variables: 
 
-`stress` (0-10 scale) which is Quantitative discrete variable (Numeric) 
+`stress` (0-10 scale) which is Quantitative discrete variable (Integer) 
 
 `standard_drink` (number of drinks in last 7 days) which is Quantitative continuous variable (Numeric)
 
@@ -55,7 +52,7 @@ Before analysis, we removed missing values and extreme values in standard_drinks
 ```{r, warning = FALSE, message = FALSE}
 ggplot(data_filtered, aes(x=data_filtered$standard_drinks))+
   geom_boxplot()+
-  labs(x="number of standart_drink last 7 days")
+  labs(x="number of standard_drink last 7 days")
 ```
 
 **Limitations** 
