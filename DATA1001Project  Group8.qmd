@@ -1,6 +1,6 @@
 ---
 title: "Analysis of influencing factors of the number of standard drinks"
-author: "DATA1001 Group8"
+author: "DATA1001 CC24_8"
 format: 
   html:
     embed-resources: true
