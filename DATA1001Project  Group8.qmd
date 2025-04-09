@@ -124,7 +124,7 @@ ggplot(model, aes(x = .fitted, y = .resid)) +
 ```
 
 Our analysis excluded extreme values, specifically those exceeding 20 standard drinks consumed in the last 7 days, to avoid overcrowding the graph.
-This reveals no significant relationship between stress levels and alcohol consumption among DATA1001 students. The scatter plot shows no clear linear pattern, with a correlation coefficient of -0.013 indicating an extremely weak negative relationship. The residual plot's non-random distribution suggests that the linear model may not be appropriate for this data.
+This reveals no clear relationship between stress levels and alcohol consumption among DATA1001 students. The scatter plot shows no clear linear pattern, with a correlation coefficient of -0.013 indicating an extremely weak negative relationship. The residual plot's non-random distribution suggests that the linear model may not be appropriate for this data.
 
 This lack of relationship could be explained by various factors: students might use other stress management methods, or their drinking patterns might be influenced more by social and cultural factors than stress levels. Some students may simply drink for enjoyment rather than stress relief.
 
